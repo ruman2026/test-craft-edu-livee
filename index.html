@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TestCraft EDU</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#1a56db;--blue-dark:#1040b0;--blue-light:#e8f0fe;
+  --amber:#f59e0b;--amber-light:#fef3c7;
+  --green:#10b981;--green-light:#d1fae5;
+  --red:#ef4444;--red-light:#fee2e2;
+  --ink:#0f172a;--ink2:#1e293b;--muted:#64748b;
+  --surface:#f1f5f9;--border:#e2e8f0;--white:#fff;
+  --shadow:0 4px 24px rgba(26,86,219,.09);
+  --shadow-lg:0 10px 40px rgba(26,86,219,.14);
+  --r:14px;--r-sm:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Hind Siliguri',sans-serif;background:#f0f4ff;color:var(--ink);min-height:100vh;overflow-x:hidden}
+.screen{display:none;min-height:100vh}
+.screen.active{display:block}
+.js-font{font-family:'Plus Jakarta Sans',sans-serif}
+
+/* ── SPLASH ── */
+#splash{background:linear-gradient(135deg,#1a56db,#0f172a);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.splash-logo{font-family:'Plus Jakarta Sans',sans-serif;font-size:32px;font-weight:800;color:#fff}.splash-logo span{color:#f59e0b}
+.splash-ring{width:56px;height:56px;border:4px solid rgba(255,255,255,.15);border-top-color:#f59e0b;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* ── NAVBAR ── */
+.navbar{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 18px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.logo{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:19px;color:var(--blue)}.logo span{color:var(--amber)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-chip{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;background:var(--blue-light);color:var(--blue)}
+.guest-chip{background:var(--amber-light);color:#92400e}
+
+/* ── AVATAR / USER MENU ── */
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;cursor:pointer;position:relative;flex-shrink:0;border:2px solid var(--blue-light)}
+.user-menu{position:absolute;top:40px;right:0;background:#fff;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:6px 0;min-width:200px;box-shadow:var(--shadow-lg);display:none;z-index:300}
+.user-menu.open{display:block}
+.um-header{padding:12px 14px;border-bottom:1px solid var(--border)}
+.um-name{font-weight:700;font-size:14px;color:var(--ink)}
+.um-role{font-size:11px;color:var(--muted);margin-top:2px}
+.um-item{padding:10px 14px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--ink);transition:background .15s}
+.um-item:hover{background:var(--surface)}
+.um-item.red{color:var(--red)}
+.um-divider{height:1px;background:var(--border);margin:4px 0}
+
+/* ── AUTH SCREENS ── */
+.auth-bg{min-height:100vh;background:linear-gradient(135deg,#1a56db 0%,#1040b0 55%,#0f172a 100%);display:flex;align-items:center;justify-content:center;padding:24px 16px;position:relative;overflow:hidden}
+.auth-bg::before{content:'';position:absolute;top:-120px;right:-80px;width:360px;height:360px;background:rgba(245,158,11,.1);border-radius:50%}
+.auth-bg::after{content:'';position:absolute;bottom:-80px;left:-60px;width:280px;height:280px;background:rgba(255,255,255,.04);border-radius:50%}
+.auth-card{background:#fff;border-radius:22px;padding:32px 26px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.22);position:relative;z-index:1}
+.auth-brand{text-align:center;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:22px;color:var(--blue);margin-bottom:4px}.auth-brand span{color:var(--amber)}
+.auth-tagline{text-align:center;color:var(--muted);font-size:13px;margin-bottom:22px}
+.auth-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:700;color:var(--ink);text-align:center;margin-bottom:18px}
+
+/* guest banner */
+.guest-banner{background:linear-gradient(135deg,var(--amber-light),#fffbf0);border:2px solid var(--amber);border-radius:var(--r-sm);padding:14px 16px;margin-bottom:18px;text-align:center}
+.guest-banner strong{display:block;font-size:14px;color:#92400e;margin-bottom:6px}
+.guest-banner p{font-size:12px;color:#78350f;margin-bottom:10px}
+
+/* social btn */
+.social-btn{width:100%;padding:11px;border-radius:var(--r-sm);border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;font-family:'Hind Siliguri',sans-serif;font-size:14px;font-weight:600;color:var(--ink);transition:all .2s;margin-bottom:8px}
+.social-btn:hover{border-color:var(--blue);background:var(--blue-light);transform:translateY(-1px)}
+.google-dot{width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#ea4335,#fbbc05,#34a853,#4285f4);flex-shrink:0}
+
+/* divider */
+.divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--muted);font-size:12px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* role selector */
+.role-row{display:flex;gap:8px;margin-bottom:18px}
+.role-card{flex:1;padding:12px 8px;border:2px solid var(--border);border-radius:var(--r-sm);cursor:pointer;text-align:center;transition:all .2s;background:var(--surface)}
+.role-card .rc-icon{font-size:24px;margin-bottom:4px}
+.role-card .rc-label{font-size:12px;font-weight:600;color:var(--muted)}
+.role-card.active{border-color:var(--blue);background:var(--blue-light)}.role-card.active .rc-label{color:var(--blue)}
+
+/* input */
+.inp-wrap{position:relative;margin-bottom:12px}
+.inp-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none}
+.inp-wrap input{width:100%;padding:11px 13px 11px 40px;border:2px solid var(--border);border-radius:var(--r-sm);font-family:'Hind Siliguri',sans-serif;font-size:14px;background:var(--surface);outline:none;transition:all .2s;color:var(--ink)}
+.inp-wrap input:focus{border-color:var(--blue);background:#fff}
+.eye-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:14px;color:var(--muted)}
+.pw-strength{height:3px;border-radius:2px;background:var(--border);overflow:hidden;margin-top:4px}
+.pw-fill{height:100%;border-radius:2px;transition:width .3s,background .3s;width:0}
+
+/* tab-row */
+.tab-row{display:flex;gap:0;border:2px solid var(--border);border-radius:var(--r-sm);overflow:hidden;margin-bottom:14px}
+.tab-btn-auth{flex:1;padding:9px;border:none;background:#fff;font-family:'Hind Siliguri',sans-serif;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s}
+.tab-btn-auth.active{background:var(--blue);color:#fff}
+
+/* btn */
+.btn{padding:11px 20px;border-radius:var(--r-sm);font-family:'Hind Siliguri',sans-serif;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{background:var(--blue-dark);transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#059669}
+.btn-amber{background:var(--amber);color:#fff}.btn-amber:hover{background:#d97706}
+.btn-red{background:var(--red);color:#fff}
+.btn-outline{background:transparent;color:var(--blue);border:2px solid var(--blue)}.btn-outline:hover{background:var(--blue-light)}
+.btn-ghost{background:var(--surface);color:var(--ink);border:2px solid var(--border)}.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+.btn-sm{padding:7px 14px;font-size:12px}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+
+.auth-switch{text-align:center;margin-top:16px;font-size:13px;color:var(--muted)}
+.auth-switch a{color:var(--blue);font-weight:600;cursor:pointer}
+
+/* ── HOME ── */
+#home{background:linear-gradient(150deg,#1a56db 0%,#1040b0 50%,#0f172a 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:32px 20px;position:relative;overflow:hidden;min-height:100vh}
+#home::before{content:'';position:absolute;top:-100px;right:-80px;width:350px;height:350px;background:rgba(245,158,11,.1);border-radius:50%}
+.home-float{font-size:64px;animation:float 3s ease-in-out infinite;margin-bottom:14px}
+.home-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:30px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:8px}.home-title span{color:var(--amber)}
+.home-sub{color:rgba(255,255,255,.7);font-size:14px;margin-bottom:10px}
+.home-user-pill{background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2);border-radius:30px;padding:8px 16px;color:#fff;font-size:13px;font-weight:600;margin-bottom:36px;display:inline-flex;align-items:center;gap:8px}
+.home-user-pill .switch-link{background:rgba(255,255,255,.2);border-radius:20px;padding:2px 10px;font-size:11px;cursor:pointer;transition:background .2s}.home-user-pill .switch-link:hover{background:rgba(255,255,255,.35)}
+.mode-cards{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;position:relative;z-index:1}
+.mode-card{background:#fff;border-radius:var(--r);padding:26px 20px;width:175px;cursor:pointer;transition:all .3s;box-shadow:var(--shadow-lg);border:3px solid transparent;text-align:center}
+.mode-card:hover{transform:translateY(-6px);border-color:var(--amber);box-shadow:0 18px 48px rgba(0,0,0,.2)}
+.mode-card .mc-icon{font-size:38px;margin-bottom:10px}
+.mode-card h3{font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.mode-card p{font-size:12px;color:var(--muted);line-height:1.4}
+.mode-card .mc-badge{font-size:10px;background:var(--amber-light);color:#92400e;padding:2px 8px;border-radius:10px;margin-top:6px;display:inline-block;font-weight:600}
+
+/* ── CONTAINER ── */
+.container{max-width:780px;margin:0 auto;padding:22px 16px}
+.page-hdr{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.back-btn{width:38px;height:38px;border-radius:var(--r-sm);border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all .2s;flex-shrink:0}.back-btn:hover{background:var(--blue-light);border-color:var(--blue)}
+.page-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:19px;font-weight:700;color:var(--ink)}
+
+.card{background:#fff;border-radius:var(--r);padding:20px;box-shadow:var(--shadow);margin-bottom:16px;border:1.5px solid var(--border)}
+.card-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+
+/* form */
+.fg{margin-bottom:13px}
+.fg label{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:5px}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 13px;border:2px solid var(--border);border-radius:var(--r-sm);font-family:'Hind Siliguri',sans-serif;font-size:14px;color:var(--ink);background:var(--surface);outline:none;transition:all .2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--blue);background:#fff}
+.fg textarea{resize:vertical;min-height:64px}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* tab-bar */
+.tab-bar{display:flex;background:#fff;border-radius:var(--r-sm);padding:3px;border:1.5px solid var(--border);gap:3px;margin-bottom:16px}
+.tabb{flex:1;padding:8px;border-radius:8px;border:none;background:transparent;font-family:'Hind Siliguri',sans-serif;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s}
+.tabb.active{background:var(--blue);color:#fff}
+
+/* exam list */
+.exam-card{background:#fff;border-radius:var(--r);padding:16px;margin-bottom:10px;border:2px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;transition:all .2s;box-shadow:var(--shadow)}
+.exam-card:hover{border-color:var(--blue);transform:translateX(3px)}
+.exam-card h3{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.chip-row{display:flex;gap:6px;flex-wrap:wrap}
+.chip{background:var(--surface);padding:2px 8px;border-radius:16px;font-size:11px;color:var(--muted);font-weight:500}
+.chip.blue{background:var(--blue-light);color:var(--blue)}.chip.amber{background:var(--amber-light);color:#92400e}.chip.green{background:var(--green-light);color:#065f46}
+
+/* question builder */
+.q-item{background:var(--surface);border-radius:var(--r-sm);padding:16px;margin-bottom:12px;border:2px solid var(--border);transition:border-color .2s}
+.q-item:hover{border-color:var(--blue)}
+.q-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.q-num{background:var(--blue);color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
+.opt-row{display:flex;align-items:center;gap:7px;background:#fff;border:2px solid var(--border);border-radius:8px;padding:7px 10px}
+.opt-row.correct{border-color:var(--green);background:var(--green-light)}
+.opt-lbl{font-weight:700;color:var(--blue);font-size:12px;width:16px;flex-shrink:0}
+.opt-row input{border:none;background:transparent;padding:0;font-size:13px;outline:none;width:100%}
+.correct-sel{margin-top:8px;display:flex;align-items:center;gap:8px}
+.correct-sel label{font-size:12px;color:var(--muted);margin:0}
+.correct-sel select{width:auto;padding:5px 8px;font-size:12px}
+
+/* image-in-question */
+.q-img-wrap{margin-top:8px}
+.q-img-preview{width:100%;max-height:180px;object-fit:contain;border-radius:8px;border:2px solid var(--border);display:none;margin-top:6px}
+.img-upload-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:2px dashed var(--border);border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);transition:all .2s;background:var(--surface)}
+.img-upload-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light)}
+
+/* AI image import */
+.ai-import-box{background:linear-gradient(135deg,var(--blue-light),#f8fbff);border:2px dashed var(--blue);border-radius:var(--r-sm);padding:18px;text-align:center;margin-bottom:14px;cursor:pointer;transition:all .2s}
+.ai-import-box:hover{background:var(--blue-light);border-style:solid}
+.ai-import-box .ai-icon{font-size:32px;margin-bottom:6px}
+.ai-import-box h4{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;color:var(--blue);margin-bottom:4px}
+.ai-import-box p{font-size:12px;color:var(--muted)}
+.ai-import-actions{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+
+/* AI loading */
+.ai-loading{display:none;flex-direction:column;align-items:center;gap:10px;padding:24px}
+.ai-spinner{width:40px;height:40px;border:4px solid var(--blue-light);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
+
+/* exam topbar */
+.exam-topbar{background:var(--ink);color:#fff;padding:11px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.exam-title-bar{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:14px}
+.timer{background:var(--amber);color:#fff;padding:5px 13px;border-radius:20px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:16px;letter-spacing:.5px}
+.timer.warn{background:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+.progress-wrap{background:rgba(255,255,255,.15);height:4px}
+.progress-fill{height:4px;background:var(--amber);transition:width .4s}
+.exam-body{max-width:700px;margin:0 auto;padding:18px 16px}
+.q-dots{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.q-dot{width:28px;height:28px;border-radius:7px;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;color:var(--muted)}
+.q-dot.done{background:var(--blue);color:#fff;border-color:var(--blue)}
+.q-dot.cur{border-color:var(--amber);box-shadow:0 0 0 3px var(--amber-light)}
+.q-card{background:#fff;border-radius:var(--r);padding:22px;box-shadow:var(--shadow);border:2px solid var(--border);margin-bottom:16px}
+.q-badge{background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:700;padding:3px 10px;border-radius:16px;display:inline-block;margin-bottom:10px}
+.q-text{font-size:16px;font-weight:600;color:var(--ink);line-height:1.5;margin-bottom:14px}
+.q-img-display{width:100%;max-height:200px;object-fit:contain;border-radius:8px;border:2px solid var(--border);margin-bottom:14px}
+.opt-btn{width:100%;text-align:left;padding:12px 15px;border-radius:var(--r-sm);border:2.5px solid var(--border);background:var(--surface);cursor:pointer;margin-bottom:8px;font-family:'Hind Siliguri',sans-serif;font-size:14px;color:var(--ink);display:flex;align-items:center;gap:9px;transition:all .2s}
+.opt-btn:hover:not(:disabled){border-color:var(--blue);background:var(--blue-light);transform:translateX(2px)}
+.opt-btn.sel{border-color:var(--blue);background:var(--blue-light);font-weight:600}
+.opt-btn.ok{border-color:var(--green);background:var(--green-light);color:#065f46}
+.opt-btn.ng{border-color:var(--red);background:var(--red-light);color:#991b1b}
+.opt-circle{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;transition:all .2s}
+.opt-btn.sel .opt-circle{background:var(--blue);color:#fff;border-color:var(--blue)}
+.opt-btn.ok .opt-circle{background:var(--green);color:#fff;border-color:var(--green)}
+.opt-btn.ng .opt-circle{background:var(--red);color:#fff;border-color:var(--red)}
+.nav-btns{display:flex;gap:8px;justify-content:space-between}
+
+/* result */
+.result-hero{background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;padding:32px 20px;text-align:center;border-radius:0 0 var(--r) var(--r);margin-bottom:20px}
+.score-ring{width:120px;height:120px;border-radius:50%;border:7px solid rgba(255,255,255,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 16px;background:rgba(255,255,255,.1)}
+.score-num{font-family:'Plus Jakarta Sans',sans-serif;font-size:32px;font-weight:800;line-height:1}
+.score-lbl{font-size:11px;opacity:.8}
+.result-ttl{font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:700;margin-bottom:5px}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat-box{background:#fff;border-radius:var(--r-sm);padding:13px;text-align:center;border:2px solid var(--border);box-shadow:var(--shadow)}
+.stat-val{font-family:'Plus Jakarta Sans',sans-serif;font-size:19px;font-weight:800;color:var(--blue)}
+.stat-key{font-size:11px;color:var(--muted);margin-top:2px}
+.review-item{background:#fff;border-radius:var(--r-sm);padding:14px;margin-bottom:9px;border-left:5px solid var(--border);box-shadow:var(--shadow)}
+.review-item.ok{border-left-color:var(--green)}.review-item.ng{border-left-color:var(--red)}
+.review-q{font-size:14px;font-weight:600;margin-bottom:7px;color:var(--ink)}
+.review-ans{font-size:12px;display:flex;align-items:flex-start;gap:5px;margin-bottom:3px}
+.review-time{font-size:11px;color:var(--muted);margin-top:6px}
+.time-chart{display:flex;flex-direction:column;gap:6px}
+.t-row{display:flex;align-items:center;gap:8px}
+.t-lbl{font-size:11px;color:var(--muted);width:48px;flex-shrink:0;text-align:right}
+.t-bg{flex:1;background:var(--surface);border-radius:3px;height:16px;overflow:hidden}
+.t-fill{height:100%;border-radius:3px;background:var(--blue);transition:width 1s ease;display:flex;align-items:center;padding-left:5px}
+.t-fill.slow{background:var(--red)}
+.t-fill span{font-size:10px;color:#fff;font-weight:700;white-space:nowrap}
+.t-val{font-size:11px;font-weight:700;width:34px}
+
+/* share card */
+.share-card{background:linear-gradient(135deg,var(--blue-light),#fff);border:2px solid var(--blue);border-radius:var(--r);padding:20px;text-align:center;margin:16px 0}
+.code-display{font-family:'Plus Jakarta Sans',sans-serif;font-size:34px;font-weight:800;color:var(--blue);letter-spacing:9px;margin:8px 0}
+
+/* demo bar */
+.demo-bar{background:linear-gradient(90deg,#f59e0b,#ea8c00);color:#fff;padding:10px 16px;text-align:center;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.demo-bar a{background:rgba(255,255,255,.25);padding:4px 12px;border-radius:16px;cursor:pointer;transition:background .2s;white-space:nowrap}.demo-bar a:hover{background:rgba(255,255,255,.4)}
+
+/* badge */
+.badge{padding:3px 10px;border-radius:16px;font-size:11px;font-weight:600}
+.badge-green{background:var(--green-light);color:#065f46}.badge-red{background:var(--red-light);color:#991b1b}.badge-blue{background:var(--blue-light);color:var(--blue)}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:400;padding:20px}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:var(--r);padding:28px;max-width:380px;width:100%;box-shadow:var(--shadow-lg);text-align:center}
+.modal h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:700;margin-bottom:7px}
+.modal p{color:var(--muted);margin-bottom:20px;font-size:13px}
+.modal-btns{display:flex;gap:8px}
+.modal-btns .btn{flex:1}
+
+/* toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--ink);color:#fff;padding:11px 20px;border-radius:var(--r-sm);font-size:13px;font-weight:500;transition:transform .3s;z-index:999;white-space:nowrap;box-shadow:var(--shadow-lg)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.ok{background:var(--green)}.toast.err{background:var(--red)}
+
+/* empty */
+.empty{text-align:center;padding:36px 16px;color:var(--muted)}
+.empty .ei{font-size:40px;margin-bottom:8px}
+
+/* ad */
+.ad-slot{background:var(--surface);border:2px dashed var(--border);border-radius:var(--r-sm);padding:16px;text-align:center;color:var(--muted);font-size:12px;margin:12px 0}
+.ad-slot span{display:block;font-size:10px;opacity:.6;margin-top:2px}
+
+/* portal switch banner */
+.portal-switch{background:var(--blue-light);border:2px solid var(--blue);border-radius:var(--r-sm);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.portal-switch p{font-size:13px;color:var(--blue);font-weight:600}
+
+/* code input */
+.code-inp{font-family:'Plus Jakarta Sans',sans-serif!important;font-size:24px!important;letter-spacing:7px!important;text-align:center!important;text-transform:uppercase}
+
+@media(max-width:480px){
+  .opts-grid{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .mode-card{width:150px;padding:20px 14px}
+  .home-title{font-size:24px}
+  .fg-row{grid-template-columns:1fr}
+  .code-display{font-size:26px;letter-spacing:5px}
+}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash" class="screen active">
+  <div class="splash-logo">TestCraft <span>EDU</span></div>
+  <div class="splash-ring"></div>
+</div>
+
+<!-- ════════════ LOGIN ════════════ -->
+<div id="login" class="screen">
+  <div class="auth-bg">
+    <div class="auth-card">
+      <div class="auth-brand">TestCraft <span>EDU</span></div>
+      <div class="auth-tagline">বাংলাদেশের স্মার্ট MCQ পরীক্ষা প্ল্যাটফর্ম</div>
+
+      <!-- Guest banner -->
+      <div class="guest-banner">
+        <strong>🎯 আগে দেখুন, পরে সিদ্ধান্ত নিন!</strong>
+        <p>রেজিস্ট্রেশন ছাড়াই Demo পরীক্ষা দিতে পারবেন</p>
+        <button class="btn btn-amber btn-block" onclick="continueAsGuest()">👀 Guest হিসেবে দেখুন</button>
+      </div>
+
+      <div class="divider">অথবা অ্যাকাউন্ট দিয়ে লগইন করুন</div>
+
+      <button class="social-btn" onclick="googleAuth()">
+        <div class="google-dot"></div>
+        Google দিয়ে লগইন করুন
+      </button>
+
+      <div class="divider">অথবা Email দিয়ে</div>
+
+      <div class="tab-row">
+        <button class="tab-btn-auth active" id="li-email-tab" onclick="switchLoginTab('email')">📧 Email</button>
+        <button class="tab-btn-auth" id="li-phone-tab" onclick="switchLoginTab('phone')">📱 Phone</button>
+      </div>
+
+      <div id="li-email-form">
+        <div class="inp-wrap"><span class="inp-icon">📧</span><input type="email" id="li-email" placeholder="ইমেইল ঠিকানা"></div>
+        <div class="inp-wrap">
+          <span class="inp-icon">🔒</span>
+          <input type="password" id="li-pass" placeholder="পাসওয়ার্ড">
+          <button class="eye-btn" onclick="toggleEye('li-pass',this)">👁</button>
+        </div>
+        <div style="text-align:right;margin-bottom:12px;"><a style="font-size:12px;color:var(--blue);cursor:pointer;">পাসওয়ার্ড ভুলে গেছেন?</a></div>
+        <button class="btn btn-primary btn-block" style="padding:13px;" onclick="doLogin()">🚀 লগইন করুন</button>
+      </div>
+
+      <div id="li-phone-form" style="display:none;">
+        <div class="inp-wrap"><span class="inp-icon">📱</span><input type="tel" id="li-phone" placeholder="01XXXXXXXXX" maxlength="11"></div>
+        <button class="btn btn-primary btn-block" onclick="sendOTP('li')">📨 OTP পাঠান</button>
+        <div id="li-otp-wrap" style="display:none;margin-top:10px;">
+          <div class="inp-wrap"><span class="inp-icon">🔢</span><input type="number" id="li-otp" placeholder="6 সংখ্যার OTP (Demo: 123456)"></div>
+          <button class="btn btn-green btn-block" onclick="verifyOTP('li')">✅ যাচাই করুন</button>
+        </div>
+      </div>
+
+      <div class="auth-switch">অ্যাকাউন্ট নেই? <a onclick="showScreen('register')">রেজিস্ট্রেশন করুন</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ REGISTER ════════════ -->
+<div id="register" class="screen">
+  <div class="auth-bg">
+    <div class="auth-card">
+      <div class="auth-brand">TestCraft <span>EDU</span></div>
+      <div class="auth-title">নতুন অ্যাকাউন্ট তৈরি</div>
+
+      <!-- role -->
+      <div class="role-row">
+        <div class="role-card active" id="rc-teacher" onclick="setRegRole('teacher')">
+          <div class="rc-icon">👨‍🏫</div><div class="rc-label">শিক্ষক</div>
+        </div>
+        <div class="role-card" id="rc-student" onclick="setRegRole('student')">
+          <div class="rc-icon">🎓</div><div class="rc-label">শিক্ষার্থী</div>
+        </div>
+      </div>
+
+      <button class="social-btn" onclick="googleAuth()">
+        <div class="google-dot"></div>Google দিয়ে রেজিস্ট্রেশন
+      </button>
+      <div class="divider">অথবা Email দিয়ে</div>
+
+      <div class="tab-row">
+        <button class="tab-btn-auth active" id="reg-email-tab" onclick="switchRegTab('email')">📧 Email</button>
+        <button class="tab-btn-auth" id="reg-phone-tab" onclick="switchRegTab('phone')">📱 Phone</button>
+      </div>
+
+      <div class="inp-wrap"><span class="inp-icon">👤</span><input type="text" id="reg-name" placeholder="আপনার পুরো নাম *"></div>
+
+      <div id="reg-email-form">
+        <div class="inp-wrap"><span class="inp-icon">📧</span><input type="email" id="reg-email" placeholder="ইমেইল *"></div>
+        <div class="inp-wrap">
+          <span class="inp-icon">🔒</span>
+          <input type="password" id="reg-pass" placeholder="পাসওয়ার্ড (৬+ অক্ষর)" oninput="pwStrength(this)">
+          <button class="eye-btn" onclick="toggleEye('reg-pass',this)">👁</button>
+        </div>
+        <div class="pw-strength"><div class="pw-fill" id="pw-fill"></div></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:3px;margin-bottom:10px;" id="pw-text"></div>
+        <div class="inp-wrap"><span class="inp-icon">🔒</span><input type="password" id="reg-pass2" placeholder="পাসওয়ার্ড আবার লিখুন"></div>
+      </div>
+
+      <div id="reg-phone-form" style="display:none;">
+        <div class="inp-wrap"><span class="inp-icon">📱</span><input type="tel" id="reg-phone" placeholder="01XXXXXXXXX" maxlength="11"></div>
+        <button class="btn btn-outline btn-block" style="margin-bottom:10px;" onclick="sendOTP('reg')">📨 OTP পাঠান</button>
+        <div id="reg-otp-wrap" style="display:none;">
+          <div class="inp-wrap"><span class="inp-icon">🔢</span><input type="number" id="reg-otp" placeholder="OTP কোড (Demo: 123456)"></div>
+        </div>
+      </div>
+
+      <div id="teacher-field">
+        <div class="inp-wrap"><span class="inp-icon">🏫</span><input type="text" id="reg-inst" placeholder="প্রতিষ্ঠানের নাম (ঐচ্ছিক)"></div>
+      </div>
+
+      <div style="display:flex;align-items:flex-start;gap:7px;margin-bottom:14px;">
+        <input type="checkbox" id="reg-terms" style="width:auto;margin-top:3px;flex-shrink:0;">
+        <label for="reg-terms" style="font-size:11px;color:var(--muted);cursor:pointer;">আমি <a style="color:var(--blue);">শর্তাবলি</a> ও <a style="color:var(--blue);">গোপনীয়তা নীতি</a> মেনে নিচ্ছি</label>
+      </div>
+
+      <button class="btn btn-primary btn-block" style="padding:13px;" onclick="doRegister()">✅ অ্যাকাউন্ট তৈরি করুন</button>
+      <div class="auth-switch">ইতিমধ্যে অ্যাকাউন্ট আছে? <a onclick="showScreen('login')">লগইন করুন</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ HOME ════════════ -->
+<div id="home" class="screen">
+  <div id="home-inner" style="min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:32px 20px;background:linear-gradient(150deg,#1a56db,#1040b0,#0f172a);position:relative;overflow:hidden;">
+    <div style="position:absolute;top:-100px;right:-80px;width:350px;height:350px;background:rgba(245,158,11,.1);border-radius:50%;pointer-events:none;"></div>
+    <div class="home-float">📝</div>
+    <h1 class="home-title">TestCraft <span>EDU</span></h1>
+    <p class="home-sub" id="home-sub">সহজে MCQ পরীক্ষা তৈরি করুন এবং দিন</p>
+
+    <!-- User pill -->
+    <div class="home-user-pill" id="home-pill" style="display:none;">
+      <span id="pill-text">👤 User</span>
+      <span class="switch-link" onclick="showPortalSwitch()">পোর্টাল পরিবর্তন করুন ↕</span>
+      <span class="switch-link" onclick="doLogout()">লগআউট</span>
+    </div>
+
+    <div class="mode-cards">
+      <div class="mode-card" onclick="goMode('teacher')">
+        <div class="mc-icon">👨‍🏫</div>
+        <h3>শিক্ষক পোর্টাল</h3>
+        <p>পরীক্ষা তৈরি করুন ও ফলাফল দেখুন</p>
+        <div class="mc-badge" id="teacher-badge-home">Demo মোড</div>
+      </div>
+      <div class="mode-card" onclick="goMode('student')">
+        <div class="mc-icon">🎓</div>
+        <h3>শিক্ষার্থী পোর্টাল</h3>
+        <p>পরীক্ষায় অংশ নিন ও ফলাফল জানুন</p>
+        <div class="mc-badge" id="student-badge-home">Demo মোড</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ TEACHER HOME ════════════ -->
+<div id="teacher-home" class="screen">
+  <nav class="navbar">
+    <div class="logo">TestCraft <span>EDU</span></div>
+    <div class="nav-right">
+      <div class="nav-chip" id="t-role-chip">👨‍🏫 শিক্ষক</div>
+      <div style="position:relative;">
+        <div class="avatar" id="t-avatar" onclick="toggleMenu('t-menu')">T</div>
+        <div class="user-menu" id="t-menu">
+          <div class="um-header"><div class="um-name" id="t-uname">User</div><div class="um-role" id="t-urole">শিক্ষক</div></div>
+          <div class="um-item" onclick="showPortalSwitch()">↕ পোর্টাল পরিবর্তন</div>
+          <div class="um-divider"></div>
+          <div class="um-item" onclick="showScreen('home')">🏠 হোম</div>
+          <div class="um-item red" onclick="doLogout()">🚪 লগআউট</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div id="t-demo-bar" class="demo-bar" style="display:none;">
+    ⚠️ আপনি Guest মোডে আছেন — পরীক্ষা save হবে না
+    <a onclick="showScreen('register')">রেজিস্ট্রেশন করুন →</a>
+  </div>
+  <div class="container">
+    <div class="page-hdr">
+      <button class="back-btn" onclick="showScreen('home')">←</button>
+      <div class="page-title">আমার পরীক্ষাসমূহ</div>
+    </div>
+    <div class="tab-bar">
+      <button class="tabb active" id="tabb-list" onclick="switchTeacherTab('list')">📋 পরীক্ষা তালিকা</button>
+      <button class="tabb" id="tabb-create" onclick="switchTeacherTab('create')">➕ নতুন পরীক্ষা</button>
+    </div>
+
+    <!-- LIST -->
+    <div id="tt-list"><div id="exam-list-wrap"></div></div>
+
+    <!-- CREATE -->
+    <div id="tt-create" style="display:none;">
+
+      <!-- AI IMAGE IMPORT -->
+      <div class="ai-import-box" id="ai-import-trigger">
+        <div class="ai-icon">🤖📸</div>
+        <h4>ছবি থেকে AI দিয়ে প্রশ্ন তৈরি করুন</h4>
+        <p>বই/নোটের ছবি দিন — AI স্বয়ংক্রিয়ভাবে MCQ প্রশ্ন তৈরি করবে<br>Scientific formula, বাংলা, English সব সাপোর্টেড</p>
+        <div class="ai-import-actions">
+          <label class="btn btn-primary btn-sm" for="ai-camera-input">📷 ক্যামেরা</label>
+          <label class="btn btn-ghost btn-sm" for="ai-gallery-input">🖼️ গ্যালারি</label>
+        </div>
+        <input type="file" id="ai-camera-input" accept="image/*" capture="environment" style="display:none;" onchange="handleAIImage(this)">
+        <input type="file" id="ai-gallery-input" accept="image/*" style="display:none;" onchange="handleAIImage(this)">
+      </div>
+      <!-- AI Loading -->
+      <div id="ai-loading" style="display:none;" class="card">
+        <div class="ai-loading" style="display:flex;">
+          <div class="ai-spinner"></div>
+          <div style="font-weight:600;color:var(--blue);">AI প্রশ্ন তৈরি করছে...</div>
+          <div style="font-size:12px;color:var(--muted);">ছবি বিশ্লেষণ করা হচ্ছে, একটু অপেক্ষা করুন</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 পরীক্ষার তথ্য</div>
+        <div class="fg">
+          <label>পরীক্ষার ভাষা</label>
+          <select id="exam-lang"><option value="bn">বাংলা</option><option value="en">English</option></select>
+        </div>
+        <div class="fg"><label>পরীক্ষার নাম *</label><input type="text" id="exam-name" placeholder="যেমন: বিজ্ঞান অধ্যায় ১ MCQ পরীক্ষা"></div>
+        <div class="fg"><label>বিষয়</label><input type="text" id="exam-subject" placeholder="পদার্থবিজ্ঞান / Mathematics"></div>
+        <div class="fg-row">
+          <div class="fg"><label>⏱ সময় (মিনিট)</label><input type="number" id="exam-time" placeholder="30" min="1" max="180"></div>
+          <div class="fg"><label>✅ প্রতি সঠিক নম্বর</label><input type="number" id="exam-mark" value="1" min="1"></div>
+        </div>
+        <div class="fg">
+          <label>নেগেটিভ মার্কিং</label>
+          <select id="exam-neg"><option value="0">নেই</option><option value="0.25">-০.২৫</option><option value="0.5">-০.৫</option><option value="1">-১</option></select>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">❓ প্রশ্নসমূহ</div>
+        <div id="q-container"></div>
+        <button class="btn btn-outline btn-block" onclick="addQuestion()">➕ নতুন প্রশ্ন যোগ করুন</button>
+      </div>
+
+      <div class="ad-slot">বিজ্ঞাপন<span>Google AdSense</span></div>
+      <button class="btn btn-primary btn-block" style="padding:14px;font-size:16px;" onclick="saveExam()">💾 পরীক্ষা সংরক্ষণ করুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ EXAM DETAIL ════════════ -->
+<div id="exam-detail" class="screen">
+  <nav class="navbar">
+    <div class="logo">TestCraft <span>EDU</span></div>
+    <div class="nav-right">
+      <div class="nav-chip">👨‍🏫 শিক্ষক</div>
+      <div style="position:relative;">
+        <div class="avatar" onclick="toggleMenu('td-menu')">T</div>
+        <div class="user-menu" id="td-menu">
+          <div class="um-item" onclick="showPortalSwitch()">↕ পোর্টাল পরিবর্তন</div>
+          <div class="um-item red" onclick="doLogout()">🚪 লগআউট</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="page-hdr">
+      <button class="back-btn" onclick="showScreen('teacher-home')">←</button>
+      <div class="page-title" id="detail-name">—</div>
+    </div>
+    <div class="share-card">
+      <div style="font-size:13px;color:var(--muted);">শিক্ষার্থীদের এই কোড দিন</div>
+      <div class="code-display" id="detail-code">------</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">এই কোড দিয়ে পরীক্ষায় যোগ দিতে পারবে</div>
+      <button class="btn btn-primary btn-sm" onclick="copyCode()">📋 কোড কপি</button>
+    </div>
+    <div class="stats-grid" id="detail-stats" style="margin-top:14px;"></div>
+    <div class="card">
+      <div class="card-title">📊 শিক্ষার্থীদের ফলাফল</div>
+      <div id="detail-results"></div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
+      <button class="btn btn-outline" style="flex:1;min-width:100px;" onclick="previewExam()">👁 প্রিভিউ</button>
+      <button class="btn btn-amber" style="flex:1;min-width:100px;" onclick="exportPDF()">📄 PDF</button>
+      <button class="btn btn-red" style="flex:1;min-width:100px;" onclick="deleteExam()">🗑 মুছুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ STUDENT HOME ════════════ -->
+<div id="student-home" class="screen">
+  <nav class="navbar">
+    <div class="logo">TestCraft <span>EDU</span></div>
+    <div class="nav-right">
+      <div class="nav-chip" id="s-role-chip">🎓 শিক্ষার্থী</div>
+      <div style="position:relative;">
+        <div class="avatar" id="s-avatar" onclick="toggleMenu('s-menu')">S</div>
+        <div class="user-menu" id="s-menu">
+          <div class="um-header"><div class="um-name" id="s-uname">User</div><div class="um-role" id="s-urole">শিক্ষার্থী</div></div>
+          <div class="um-item" onclick="showPortalSwitch()">↕ পোর্টাল পরিবর্তন</div>
+          <div class="um-divider"></div>
+          <div class="um-item" onclick="showScreen('home')">🏠 হোম</div>
+          <div class="um-item red" onclick="doLogout()">🚪 লগআউট</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div id="s-demo-bar" class="demo-bar" style="display:none;">
+    ⚠️ Guest মোড — ফলাফল save হবে না
+    <a onclick="showScreen('register')">রেজিস্ট্রেশন করুন →</a>
+  </div>
+  <div class="container">
+    <div class="page-hdr">
+      <button class="back-btn" onclick="showScreen('home')">←</button>
+      <div class="page-title">পরীক্ষায় যোগ দিন</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔑 পরীক্ষার কোড দিন</div>
+      <div class="fg"><label>শিক্ষক প্রদত্ত কোড</label><input type="text" id="s-code" class="code-inp" placeholder="ABCD12" maxlength="6"></div>
+      <div class="fg"><label>তোমার নাম *</label><input type="text" id="s-name" placeholder="তোমার পুরো নাম"></div>
+      <button class="btn btn-primary btn-block" style="margin-top:6px;padding:13px;" onclick="joinExam()">🚀 পরীক্ষা শুরু করুন</button>
+    </div>
+    <div class="ad-slot">বিজ্ঞাপন<span>Google AdSense</span></div>
+    <div class="card">
+      <div class="card-title">📜 আমার পরীক্ষার ইতিহাস</div>
+      <div id="s-history"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ EXAM SCREEN ════════════ -->
+<div id="exam-screen" class="screen">
+  <div class="exam-topbar">
+    <div>
+      <div class="exam-title-bar" id="run-title">পরীক্ষা</div>
+      <div style="font-size:11px;opacity:.7;" id="run-student">—</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:11px;font-weight:700;opacity:.7;" id="run-lang-flag">🇧🇩</span>
+      <div class="timer" id="timer">00:00</div>
+    </div>
+  </div>
+  <div class="progress-wrap"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+  <div class="exam-body">
+    <div class="q-dots" id="q-dots"></div>
+    <div class="q-card">
+      <div class="q-badge" id="q-badge">প্রশ্ন ১/১</div>
+      <div class="q-text" id="q-text">—</div>
+      <img id="q-img-display" class="q-img-display" style="display:none;" src="" alt="প্রশ্নের ছবি">
+      <div id="q-opts"></div>
+      <div class="nav-btns" style="margin-top:12px;">
+        <button class="btn btn-outline" id="prev-btn" onclick="prevQ()">← আগের</button>
+        <button class="btn btn-primary" id="next-btn" onclick="nextQ()">পরের →</button>
+        <button class="btn btn-green" id="sub-btn" style="display:none;" onclick="confirmSubmit()">✅ জমা দিন</button>
+      </div>
+    </div>
+    <div class="ad-slot">বিজ্ঞাপন<span>Google AdSense</span></div>
+  </div>
+</div>
+
+<!-- ════════════ RESULT ════════════ -->
+<div id="result-screen" class="screen">
+  <div class="result-hero">
+    <div class="score-ring">
+      <div class="score-num" id="res-pct">0%</div>
+      <div class="score-lbl">স্কোর</div>
+    </div>
+    <div class="result-ttl" id="res-title">পরীক্ষা সম্পন্ন</div>
+    <div style="opacity:.8;font-size:13px;" id="res-sub">—</div>
+  </div>
+  <div class="container" style="padding-top:0;">
+    <div class="stats-grid" id="res-stats"></div>
+    <div class="card"><div class="card-title">⏱ সময় বিশ্লেষণ</div><div class="time-chart" id="res-time"></div></div>
+    <div class="card"><div class="card-title">📋 উত্তর পর্যালোচনা</div><div id="res-review"></div></div>
+    <div class="ad-slot">বিজ্ঞাপন<span>Google AdSense</span></div>
+    <div style="display:flex;gap:8px;margin-top:4px;">
+      <button class="btn btn-outline" style="flex:1;" onclick="showScreen('student-home')">🏠 হোম</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="showScreen('home')">🔄 আবার</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ PORTAL SWITCH MODAL ════════════ -->
+<div class="overlay" id="portal-modal">
+  <div class="modal">
+    <div style="font-size:40px;margin-bottom:8px;">↕️</div>
+    <h2>পোর্টাল পরিবর্তন করুন</h2>
+    <p>আপনি কোন পোর্টালে যেতে চান?</p>
+    <div style="display:flex;gap:10px;margin-bottom:14px;">
+      <button class="btn btn-primary" style="flex:1;flex-direction:column;padding:16px;gap:4px;" onclick="switchPortal('teacher')">
+        <span style="font-size:24px;">👨‍🏫</span><span>শিক্ষক পোর্টাল</span>
+      </button>
+      <button class="btn btn-green" style="flex:1;flex-direction:column;padding:16px;gap:4px;" onclick="switchPortal('student')">
+        <span style="font-size:24px;">🎓</span><span>শিক্ষার্থী পোর্টাল</span>
+      </button>
+    </div>
+    <button class="btn btn-ghost btn-block" onclick="closeModal('portal-modal')">বাতিল</button>
+  </div>
+</div>
+
+<!-- SUBMIT MODAL -->
+<div class="overlay" id="submit-modal">
+  <div class="modal">
+    <div style="font-size:40px;margin-bottom:8px;">📤</div>
+    <h2 id="sm-title">পরীক্ষা জমা দিবেন?</h2>
+    <p id="sm-msg">জমা দিলে আর পরিবর্তন করা যাবে না।</p>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('submit-modal')">বাতিল</button>
+      <button class="btn btn-primary" onclick="submitExam()">✅ জমা দিন</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let user = null; // null = guest
+let regRole = 'teacher';
+let exams = JSON.parse(localStorage.getItem('tc_exams') || '[]');
+let sResults = JSON.parse(localStorage.getItem('tc_results') || '[]');
+let currentExam = null, currentExamIdx = -1;
+let curQ = 0, answers = {}, qTimes = {}, qStart = {};
+let timerInt = null, elapsed = 0;
+let qCount = 0;
+const DEMO_LIMIT = 3; // guest can attempt 3 questions then prompt signup
+
+// ═══════════════════════════════════════════
+// SCREEN MANAGEMENT
+// ═══════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='teacher-home'){renderExamList();switchTeacherTab('list')}
+  if(id==='student-home'){renderHistory();updateSName()}
+  if(id==='home'){updateHomePill()}
+  window.scrollTo(0,0);
+}
+
+// ═══════════════════════════════════════════
+// INIT / SPLASH
+// ═══════════════════════════════════════════
+window.addEventListener('DOMContentLoaded',()=>{
+  initDemoExams();
+  setTimeout(()=>{
+    const saved = localStorage.getItem('tc_user');
+    if(saved){ user=JSON.parse(saved); afterAuth(); }
+    else showScreen('login');
+  },900);
+});
+
+function initDemoExams(){
+  if(exams.length) return;
+  exams.push({
+    id:1,code:'DEMO01',name:'নমুনা বিজ্ঞান পরীক্ষা',subject:'সাধারণ বিজ্ঞান',
+    lang:'bn',timeLimit:5,mark:1,neg:0.25,results:[],
+    questions:[
+      {text:'পানির রাসায়নিক সংকেত কী?',opts:['H₂O','CO₂','O₂','NaCl'],correct:0,img:null},
+      {text:'পৃথিবীর একমাত্র প্রাকৃতিক উপগ্রহ?',opts:['মঙ্গল','শুক্র','চাঁদ','বুধ'],correct:2,img:null},
+      {text:'আলোর গতি প্রতি সেকেন্ডে কত?',opts:['৩ লক্ষ কিমি','১ লক্ষ কিমি','৫ লক্ষ কিমি','২ লক্ষ কিমি'],correct:0,img:null},
+      {text:'মানবদেহে কতটি হাড় আছে?',opts:['২০৬','১৫০','৩০০','১৮০'],correct:0,img:null},
+      {text:'সালোকসংশ্লেষণে উদ্ভিদ কোন গ্যাস ব্যবহার করে?',opts:['O₂','N₂','CO₂','H₂'],correct:2,img:null},
+    ]
+  });
+  exams.push({
+    id:2,code:'ENG001',name:'English Grammar Quiz',subject:'English',
+    lang:'en',timeLimit:10,mark:1,neg:0,results:[],
+    questions:[
+      {text:'Which sentence is grammatically correct?',opts:['She go to school.','She goes to school.','She going to school.','She gone to school.'],correct:1,img:null},
+      {text:'What is the plural of "child"?',opts:['Childs','Childes','Children','Childrens'],correct:2,img:null},
+      {text:'Which is a proper noun?',opts:['city','happiness','Dhaka','book'],correct:2,img:null},
+      {text:'Choose the correct article: ___ apple a day.',opts:['A','An','The','No article'],correct:1,img:null},
+      {text:'Past tense of "write"?',opts:['Writed','Wrote','Written','Writ'],correct:1,img:null},
+    ]
+  });
+  saveExams();
+}
+
+// ═══════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════
+function continueAsGuest(){
+  user = null;
+  localStorage.removeItem('tc_user');
+  showScreen('home');
+  updateHomePill();
+}
+
+function googleAuth(){
+  const role = document.getElementById('register')?.classList.contains('active') ? regRole : 'teacher';
+  toast('Google লগইন সংযুক্ত হচ্ছে...','');
+  setTimeout(()=>{
+    loginUser({name:'Google ব্যবহারকারী',email:'user@gmail.com',role,av:'G',method:'google'});
+  },1100);
+}
+
+function switchLoginTab(t){
+  document.getElementById('li-email-tab').classList.toggle('active',t==='email');
+  document.getElementById('li-phone-tab').classList.toggle('active',t==='phone');
+  document.getElementById('li-email-form').style.display=t==='email'?'block':'none';
+  document.getElementById('li-phone-form').style.display=t==='email'?'none':'block';
+}
+function switchRegTab(t){
+  document.getElementById('reg-email-tab').classList.toggle('active',t==='email');
+  document.getElementById('reg-phone-tab').classList.toggle('active',t==='phone');
+  document.getElementById('reg-email-form').style.display=t==='email'?'block':'none';
+  document.getElementById('reg-phone-form').style.display=t==='email'?'none':'block';
+}
+
+function setRegRole(r){
+  regRole=r;
+  ['teacher','student'].forEach(x=>{
+    document.getElementById('rc-'+x).classList.toggle('active',x===r);
+  });
+  document.getElementById('teacher-field').style.display=r==='teacher'?'block':'none';
+}
+
+function toggleEye(id,btn){
+  const i=document.getElementById(id);
+  i.type=i.type==='password'?'text':'password';
+  btn.textContent=i.type==='password'?'👁':'🙈';
+}
+
+function pwStrength(el){
+  const v=el.value,fill=document.getElementById('pw-fill'),txt=document.getElementById('pw-text');
+  let s=0;
+  if(v.length>=6)s++;if(v.length>=10)s++;if(/[A-Z]/.test(v))s++;if(/[0-9]/.test(v))s++;if(/[^A-Za-z0-9]/.test(v))s++;
+  const lvl=[{w:'0%',c:'transparent',t:''},{w:'25%',c:'#ef4444',t:'দুর্বল'},{w:'50%',c:'#f59e0b',t:'মাঝারি'},{w:'75%',c:'#3b82f6',t:'ভালো'},{w:'100%',c:'#10b981',t:'শক্তিশালী'}];
+  const l=lvl[Math.min(s,4)];
+  fill.style.width=l.w;fill.style.background=l.c;txt.textContent=l.t;txt.style.color=l.c;
+}
+
+function sendOTP(form){
+  const phone=document.getElementById(form==='li'?'li-phone':'reg-phone').value;
+  if(!phone||phone.length<11){toast('সঠিক ফোন নম্বর দিন!','err');return}
+  document.getElementById(form+'-otp-wrap').style.display='block';
+  toast(phone+' নম্বরে OTP পাঠানো হয়েছে (Demo: 123456)','ok');
+}
+
+function verifyOTP(form){
+  const otp=document.getElementById(form+'-otp').value;
+  if(otp==='123456'){
+    const phone=document.getElementById('li-phone').value;
+    loginUser({name:'ব্যবহারকারী',email:phone,role:'student',av:'U',method:'phone'});
+  } else toast('OTP ভুল! Demo: 123456','err');
+}
+
+function doLogin(){
+  const email=document.getElementById('li-email').value.trim();
+  const pass=document.getElementById('li-pass').value;
+  if(!email){toast('ইমেইল দিন!','err');return}
+  if(!pass){toast('পাসওয়ার্ড দিন!','err');return}
+  const users=JSON.parse(localStorage.getItem('tc_users')||'[]');
+  const found=users.find(u=>u.email===email&&u.password===pass);
+  if(!found){toast('ইমেইল বা পাসওয়ার্ড ভুল!','err');return}
+  loginUser(found);
+}
+
+function doRegister(){
+  const name=document.getElementById('reg-name').value.trim();
+  const email=document.getElementById('reg-email').value.trim();
+  const pass=document.getElementById('reg-pass').value;
+  const pass2=document.getElementById('reg-pass2').value;
+  const terms=document.getElementById('reg-terms').checked;
+  const inst=document.getElementById('reg-inst')?.value.trim()||'';
+  if(!name){toast('নাম দিন!','err');return}
+  if(!email){toast('ইমেইল দিন!','err');return}
+  if(pass.length<6){toast('পাসওয়ার্ড কমপক্ষে ৬ অক্ষর!','err');return}
+  if(pass!==pass2){toast('পাসওয়ার্ড মিলছে না!','err');return}
+  if(!terms){toast('শর্তাবলি মেনে নিন!','err');return}
+  const users=JSON.parse(localStorage.getItem('tc_users')||'[]');
+  if(users.find(u=>u.email===email)){toast('এই ইমেইলে অ্যাকাউন্ট আছে!','err');return}
+  const u={name,email,password:pass,role:regRole,inst,av:name[0].toUpperCase(),method:'email'};
+  users.push(u);
+  localStorage.setItem('tc_users',JSON.stringify(users));
+  toast('অ্যাকাউন্ট তৈরি হয়েছে! ✅','ok');
+  loginUser(u);
+}
+
+function loginUser(u){
+  user=u;
+  localStorage.setItem('tc_user',JSON.stringify(u));
+  afterAuth();
+}
+
+function afterAuth(){
+  updateHomePill();
+  updateAvatars();
+  if(user?.role==='student'){
+    const el=document.getElementById('s-name');
+    if(el)el.value=user.name;
+  }
+  showScreen('home');
+}
+
+function updateHomePill(){
+  const pill=document.getElementById('home-pill');
+  const sub=document.getElementById('home-sub');
+  const tb=document.getElementById('teacher-badge-home');
+  const sb=document.getElementById('student-badge-home');
+  if(user){
+    pill.style.display='inline-flex';
+    document.getElementById('pill-text').textContent='👤 '+user.name+' ('+( user.role==='teacher'?'শিক্ষক':'শিক্ষার্থী')+')';
+    sub.textContent='আপনাকে স্বাগতম!';
+    tb.textContent='✅ লগড ইন'; tb.style.background='var(--green-light)'; tb.style.color='#065f46';
+    sb.textContent='✅ লগড ইন'; sb.style.background='var(--green-light)'; sb.style.color='#065f46';
+  } else {
+    pill.style.display='none';
+    sub.textContent='Demo দেখুন বা রেজিস্ট্রেশন করুন';
+    tb.textContent='Demo মোড'; sb.textContent='Demo মোড';
+    tb.style.background=''; tb.style.color=''; sb.style.background=''; sb.style.color='';
+  }
+}
+
+function updateAvatars(){
+  if(!user)return;
+  const av=user.av||user.name[0]||'U';
+  ['t-avatar'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=av});
+  ['s-avatar'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=av});
+  const un=document.getElementById('t-uname');if(un)un.textContent=user.name;
+  const ur=document.getElementById('t-urole');if(ur)ur.textContent=user.role==='teacher'?'শিক্ষক':'শিক্ষার্থী';
+  const sn=document.getElementById('s-uname');if(sn)sn.textContent=user.name;
+  const sr=document.getElementById('s-urole');if(sr)sr.textContent=user.role==='teacher'?'শিক্ষক':'শিক্ষার্থী';
+}
+
+function doLogout(){
+  user=null;
+  localStorage.removeItem('tc_user');
+  toast('লগআউট হয়েছে','');
+  setTimeout(()=>showScreen('login'),500);
+}
+
+// ═══════════════════════════════════════════
+// PORTAL SWITCH
+// ═══════════════════════════════════════════
+function showPortalSwitch(){
+  closeAllMenus();
+  document.getElementById('portal-modal').classList.add('open');
+}
+
+function switchPortal(mode){
+  closeModal('portal-modal');
+  if(mode==='teacher') showScreen('teacher-home');
+  else showScreen('student-home');
+}
+
+function goMode(mode){
+  if(mode==='teacher') showScreen('teacher-home');
+  else showScreen('student-home');
+  // Show demo bar for guests
+  const bar = document.getElementById(mode==='teacher'?'t-demo-bar':'s-demo-bar');
+  if(bar) bar.style.display = user?'none':'flex';
+}
+
+// ═══════════════════════════════════════════
+// MENU
+// ═══════════════════════════════════════════
+function toggleMenu(id){
+  closeAllMenus();
+  document.getElementById(id)?.classList.toggle('open');
+}
+function closeAllMenus(){document.querySelectorAll('.user-menu').forEach(m=>m.classList.remove('open'))}
+document.addEventListener('click',e=>{if(!e.target.closest('.avatar')&&!e.target.closest('.user-menu'))closeAllMenus()});
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+
+// ═══════════════════════════════════════════
+// AI IMAGE TO QUESTIONS
+// ═══════════════════════════════════════════
+function handleAIImage(input){
+  if(!input.files||!input.files[0])return;
+  const file=input.files[0];
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const base64=e.target.result.split(',')[1];
+    document.getElementById('ai-import-trigger').style.display='none';
+    document.getElementById('ai-loading').style.display='block';
+    callClaudeForQuestions(base64);
+  };
+  reader.readAsDataURL(file);
+  input.value=''; // reset
+}
+
+async function callClaudeForQuestions(base64){
+  const examLang = document.getElementById('exam-lang').value||'bn';
+  const prompt = examLang==='en'
+    ? `You are an expert MCQ question creator. Analyze this image (textbook page, notes, or study material) and create 5 high-quality MCQ questions based on the content. Return ONLY valid JSON in this exact format, no other text:\n{"questions":[{"text":"Question text here","opts":["Option A","Option B","Option C","Option D"],"correct":0}]}\nThe correct field is the 0-based index of the correct answer. Create exactly 5 questions.`
+    : `তুমি একজন বিশেষজ্ঞ MCQ প্রশ্ন তৈরিকারী। এই ছবিটি (বইয়ের পাতা, নোট বা পড়ার উপকরণ) বিশ্লেষণ করো এবং এর বিষয়বস্তুর উপর ৫টি উচ্চমানের MCQ প্রশ্ন তৈরি করো। শুধুমাত্র এই ফরম্যাটে JSON রিটার্ন করো, অন্য কোনো লেখা নয়:\n{"questions":[{"text":"প্রশ্নের লেখা","opts":["অপশন ক","অপশন খ","অপশন গ","অপশন ঘ"],"correct":0}]}\nCorrect মান হলো সঠিক উত্তরের 0-ভিত্তিক index। ঠিক ৫টি প্রশ্ন তৈরি করো।`;
+
+  try{
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:[
+          {type:'image',source:{type:'base64',media_type:'image/jpeg',data:base64}},
+          {type:'text',text:prompt}
+        ]}]
+      })
+    });
+    const data=await resp.json();
+    const rawText=data.content?.find(b=>b.type==='text')?.text||'';
+    let parsed;
+    try{
+      const clean=rawText.replace(/```json|```/g,'').trim();
+      parsed=JSON.parse(clean);
+    }catch{toast('AI উত্তর পার্স করা যায়নি। আবার চেষ্টা করুন।','err');resetAIBox();return}
+
+    const qs=parsed.questions||[];
+    if(!qs.length){toast('কোনো প্রশ্ন পাওয়া যায়নি।','err');resetAIBox();return}
+
+    // Clear existing questions
+    document.getElementById('q-container').innerHTML='';
+    qCount=0;
+    qs.forEach(q=>addQuestion(q));
+
+    document.getElementById('ai-loading').style.display='none';
+    document.getElementById('ai-import-trigger').style.display='block';
+    toast('✅ '+qs.length+'টি প্রশ্ন তৈরি হয়েছে!','ok');
+    // Switch to create tab
+    switchTeacherTab('create');
+  }catch(err){
+    toast('AI সংযোগে সমস্যা হয়েছে।','err');
+    resetAIBox();
+  }
+}
+
+function resetAIBox(){
+  document.getElementById('ai-loading').style.display='none';
+  document.getElementById('ai-import-trigger').style.display='block';
+}
+
+// ═══════════════════════════════════════════
+// TEACHER TABS
+// ═══════════════════════════════════════════
+function switchTeacherTab(t){
+  document.getElementById('tt-list').style.display=t==='list'?'block':'none';
+  document.getElementById('tt-create').style.display=t==='create'?'block':'none';
+  document.getElementById('tabb-list').classList.toggle('active',t==='list');
+  document.getElementById('tabb-create').classList.toggle('active',t==='create');
+  if(t==='create') initCreateForm();
+}
+
+function initCreateForm(){
+  qCount=0;
+  ['exam-name','exam-subject','exam-time'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
+  document.getElementById('exam-mark').value='1';
+  document.getElementById('exam-neg').value='0';
+  document.getElementById('exam-lang').value='bn';
+  document.getElementById('q-container').innerHTML='';
+  addQuestion();
+}
+
+// ═══════════════════════════════════════════
+// QUESTION BUILDER
+// ═══════════════════════════════════════════
+function addQuestion(prefill=null){
+  qCount++;
+  const n=qCount;
+  const eLang=document.getElementById('exam-lang')?.value||'bn';
+  const opts=['ক','খ','গ','ঘ'];
+  const enOpts=['A','B','C','D'];
+  const lbls=eLang==='en'?enOpts:opts;
+  const placeholders=eLang==='en'?['Option A','Option B','Option C','Option D']:['অপশন ক','অপশন খ','অপশন গ','অপশন ঘ'];
+  const qPh=eLang==='en'?'Type your question here...':'এখানে প্রশ্ন লিখুন...';
+
+  const div=document.createElement('div');
+  div.className='q-item';div.id='qi-'+n;
+  div.innerHTML=`
+    <div class="q-hdr">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="q-num">${n}</div>
+        <span style="font-size:13px;font-weight:600;color:var(--ink2);">${eLang==='en'?'Question':'প্রশ্ন'} ${n}</span>
+      </div>
+      ${n>1?`<button class="btn btn-red btn-sm" onclick="removeQ(${n})">✕</button>`:''}
+    </div>
+    <div class="fg">
+      <textarea id="qt-${n}" placeholder="${qPh}" rows="2">${prefill?.text||''}</textarea>
+    </div>
+
+    <!-- Image in question -->
+    <div class="q-img-wrap">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <label class="img-upload-btn" for="qi-img-${n}">
+          🖼️ ${eLang==='en'?'Add image to question':'প্রশ্নে ছবি যোগ করুন'}
+        </label>
+        <input type="file" id="qi-img-${n}" accept="image/*" style="display:none;" onchange="previewQImg(${n},this)">
+        <label class="img-upload-btn" for="qi-cam-${n}">📷</label>
+        <input type="file" id="qi-cam-${n}" accept="image/*" capture="environment" style="display:none;" onchange="previewQImg(${n},this)">
+        <button class="btn btn-ghost btn-sm" id="qi-rm-img-${n}" onclick="removeQImg(${n})" style="display:none;">✕ ছবি মুছুন</button>
+      </div>
+      <img id="qi-img-preview-${n}" class="q-img-preview" src="" alt="প্রশ্নের ছবি">
+      <input type="hidden" id="qi-img-data-${n}" value="">
+    </div>
+
+    <div class="opts-grid">
+      ${[0,1,2,3].map(i=>`
+        <div class="opt-row" id="or-${n}-${i}">
+          <span class="opt-lbl">${lbls[i]}.</span>
+          <input type="text" id="oo-${n}-${i}" placeholder="${placeholders[i]}" value="${prefill?.opts?.[i]||''}">
+        </div>
+      `).join('')}
+    </div>
+    <div class="correct-sel">
+      <label>${eLang==='en'?'✅ Correct Answer:':'✅ সঠিক উত্তর:'}</label>
+      <select id="oc-${n}" onchange="highlightCorrect(${n},this.value)">
+        ${lbls.map((l,i)=>`<option value="${i}" ${prefill?.correct===i?'selected':''}>${l}</option>`).join('')}
+      </select>
+    </div>
+  `;
+  document.getElementById('q-container').appendChild(div);
+  // highlight correct if prefill
+  if(prefill) highlightCorrect(n, prefill.correct||0);
+}
+
+function previewQImg(n,input){
+  if(!input.files||!input.files[0])return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=document.getElementById('qi-img-preview-'+n);
+    const data=document.getElementById('qi-img-data-'+n);
+    const rmBtn=document.getElementById('qi-rm-img-'+n);
+    img.src=e.target.result;img.style.display='block';
+    data.value=e.target.result; // store base64
+    rmBtn.style.display='inline-flex';
+    toast('ছবি যোগ হয়েছে ✅','ok');
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function removeQImg(n){
+  document.getElementById('qi-img-preview-'+n).style.display='none';
+  document.getElementById('qi-img-data-'+n).value='';
+  document.getElementById('qi-rm-img-'+n).style.display='none';
+  document.getElementById('qi-img-'+n).value='';
+  document.getElementById('qi-cam-'+n).value='';
+}
+
+function highlightCorrect(n,v){
+  [0,1,2,3].forEach(i=>document.getElementById('or-'+n+'-'+i)?.classList.toggle('correct',i==v));
+}
+function removeQ(n){document.getElementById('qi-'+n)?.remove()}
+
+// ═══════════════════════════════════════════
+// SAVE EXAM
+// ═══════════════════════════════════════════
+function genCode(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';return Array.from({length:6},()=>c[Math.floor(Math.random()*c.length)]).join('')}
+function saveExams(){localStorage.setItem('tc_exams',JSON.stringify(exams))}
+
+function saveExam(){
+  // Guest limit check
+  if(!user){
+    toast('পরীক্ষা save করতে রেজিস্ট্রেশন করুন!','err');
+    setTimeout(()=>showScreen('register'),1200);
+    return;
+  }
+  const name=document.getElementById('exam-name').value.trim();
+  const subject=document.getElementById('exam-subject').value.trim();
+  const timeLimit=parseInt(document.getElementById('exam-time').value)||0;
+  const mark=parseFloat(document.getElementById('exam-mark').value)||1;
+  const neg=parseFloat(document.getElementById('exam-neg').value)||0;
+  const lang=document.getElementById('exam-lang').value||'bn';
+  if(!name){toast('পরীক্ষার নাম দিন!','err');return}
+
+  const qItems=document.querySelectorAll('.q-item');
+  if(!qItems.length){toast('অন্তত একটি প্রশ্ন যোগ করুন!','err');return}
+
+  const questions=[];let valid=true;
+  qItems.forEach(item=>{
+    const id=item.id.replace('qi-','');
+    const text=document.getElementById('qt-'+id)?.value.trim();
+    const opts=[0,1,2,3].map(i=>document.getElementById('oo-'+id+'-'+i)?.value.trim()||'');
+    const correct=parseInt(document.getElementById('oc-'+id)?.value||0);
+    const img=document.getElementById('qi-img-data-'+id)?.value||null;
+    if(!text||opts.some(o=>!o))valid=false;
+    questions.push({text,opts,correct,img});
+  });
+
+  if(!valid){toast('সব প্রশ্ন ও অপশন পূরণ করুন!','err');return}
+
+  const exam={id:Date.now(),code:genCode(),name,subject,lang,timeLimit,mark,neg,questions,results:[],createdBy:user.email,createdAt:new Date().toLocaleDateString()};
+  exams.push(exam);saveExams();
+  toast('পরীক্ষা সংরক্ষিত হয়েছে! ✅','ok');
+  setTimeout(()=>switchTeacherTab('list'),700);
+}
+
+// ═══════════════════════════════════════════
+// EXAM LIST
+// ═══════════════════════════════════════════
+function renderExamList(){
+  const wrap=document.getElementById('exam-list-wrap');
+  if(!wrap)return;
+  const myExams = user ? exams.filter(e=>e.createdBy===user.email||!e.createdBy) : exams;
+  if(!myExams.length){wrap.innerHTML='<div class="empty"><div class="ei">📭</div><p>এখনো কোনো পরীক্ষা তৈরি হয়নি।<br>নতুন পরীক্ষা তৈরি করুন!</p></div>';return}
+  wrap.innerHTML=myExams.map((e,i)=>`
+    <div class="exam-card" onclick="openDetail(${exams.indexOf(e)})">
+      <div>
+        <h3>${e.name}</h3>
+        <div class="chip-row" style="margin-top:5px;">
+          <span class="chip ${e.lang==='en'?'green':'blue'}">${e.lang==='en'?'🇬🇧 EN':'🇧🇩 বাং'}</span>
+          ${e.subject?`<span class="chip blue">📚 ${e.subject}</span>`:''}
+          <span class="chip">❓ ${e.questions.length}টি</span>
+          ${e.timeLimit?`<span class="chip amber">⏱ ${e.timeLimit}মি`:'<span class="chip">⏱ সীমা নেই'}</span>
+          <span class="chip">👥 ${e.results?.length||0}জন</span>
+        </div>
+      </div>
+      <div style="font-size:20px;color:var(--muted);">›</div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════
+// EXAM DETAIL
+// ═══════════════════════════════════════════
+
+function openDetail(idx){
+  currentExamIdx=idx;
+  const e=exams[idx];
+  document.getElementById('detail-name').textContent=e.name;
+  document.getElementById('detail-code').textContent=e.code;
+  const res=e.results||[];
+  const avg=res.length?Math.round(res.reduce((a,b)=>a+b.pct,0)/res.length):0;
+  const avgT=res.length?Math.round(res.reduce((a,b)=>a+b.totalTime,0)/res.length):0;
+  document.getElementById('detail-stats').innerHTML=`
+    <div class="stat-box"><div class="stat-val">${e.questions.length}</div><div class="stat-key">প্রশ্ন</div></div>
+    <div class="stat-box"><div class="stat-val">${res.length}</div><div class="stat-key">পরীক্ষার্থী</div></div>
+    <div class="stat-box"><div class="stat-val">${avg}%</div><div class="stat-key">গড় স্কোর</div></div>
+    <div class="stat-box"><div class="stat-val">${e.timeLimit||'∞'}</div><div class="stat-key">মিনিট</div></div>
+    <div class="stat-box"><div class="stat-val">${e.mark}</div><div class="stat-key">প্রতি নম্বর</div></div>
+    <div class="stat-box"><div class="stat-val">${avgT}s</div><div class="stat-key">গড় সময়</div></div>
+  `;
+  const dr=document.getElementById('detail-results');
+  if(!res.length){dr.innerHTML='<div class="empty" style="padding:18px;"><div class="ei">⏳</div><p>এখনো কোনো পরীক্ষার্থী নেই</p></div>';
+  }else{
+    dr.innerHTML=res.map(r=>`
+      <div style="padding:11px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-weight:600;font-size:13px;">${r.name}</div><div style="font-size:11px;color:var(--muted);">${r.date} • ${fmtTime(r.totalTime)}</div></div>
+        <div style="display:flex;gap:5px;"><span class="badge ${r.pct>=50?'badge-green':'badge-red'}">${r.pct}%</span><span class="badge badge-blue">${r.correct}/${r.total}</span></div>
+      </div>`).join('');
+  }
+  showScreen('exam-detail');
+}
+
+function copyCode(){
+  const c=document.getElementById('detail-code').textContent;
+  navigator.clipboard.writeText(c).then(()=>toast('কোড কপি হয়েছে! 📋','ok'));
+}
+
+function deleteExam(){
+  if(confirm('এই পরীক্ষাটি মুছে ফেলবেন?')){exams.splice(currentExamIdx,1);saveExams();showScreen('teacher-home');toast('মুছে ফেলা হয়েছে','err')}
+}
+function previewExam(){startExam(exams[currentExamIdx],'Preview')}
+
+// ═══════════════════════════════════════════
+// STUDENT JOIN
+// ═══════════════════════════════════════════
+function updateSName(){
+  if(user){const el=document.getElementById('s-name');if(el)el.value=user.name}
+}
+
+function joinExam(){
+  const code=document.getElementById('s-code').value.trim().toUpperCase();
+  const name=document.getElementById('s-name').value.trim();
+  if(!code){toast('পরীক্ষার কোড দিন!','err');return}
+  if(!name){toast('তোমার নাম দিন!','err');return}
+  const exam=exams.find(e=>e.code===code);
+  if(!exam){toast('কোড সঠিক নয়! আবার চেষ্টা করুন','err');return}
+  startExam(exam,name);
+}
+
+// ═══════════════════════════════════════════
+// RUN EXAM
+// ═══════════════════════════════════════════
+function startExam(exam,sName){
+  currentExam=exam;curQ=0;answers={};qTimes={};qStart={};elapsed=0;
+  const runName=sName||(user?.name||'Guest');
+
+  document.getElementById('run-title').textContent=exam.name;
+  document.getElementById('run-student').textContent='👤 '+runName;
+  document.getElementById('run-lang-flag').textContent=exam.lang==='en'?'🇬🇧':'🇧🇩';
+
+  renderDots();renderQ();
+  showScreen('exam-screen');
+
+  clearInterval(timerInt);
+  const timerEl=document.getElementById('timer');
+  if(exam.timeLimit>0){
+    let rem=exam.timeLimit*60;
+    timerInt=setInterval(()=>{
+      rem--;elapsed++;
+      if(rem<=0){clearInterval(timerInt);submitExam();return}
+      timerEl.textContent=fmtClock(rem);
+      timerEl.classList.toggle('warn',rem<=60);
+    },1000);
+  }else{
+    timerInt=setInterval(()=>{elapsed++;timerEl.textContent=fmtClock(elapsed)},1000);
+  }
+  qStart[0]=Date.now();
+}
+
+function fmtClock(s){return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`}
+
+function renderQ(){
+  const exam=currentExam;const q=exam.questions[curQ];const tot=exam.questions.length;
+  const isEn=exam.lang==='en';
+  const lbls=isEn?['A','B','C','D']:['ক','খ','গ','ঘ'];
+  document.getElementById('q-badge').textContent=(isEn?'Question ':'প্রশ্ন ')+(curQ+1)+'/'+(tot);
+  document.getElementById('q-text').textContent=q.text;
+  document.getElementById('prog').style.width=((curQ+1)/tot*100)+'%';
+
+  // Image in question
+  const imgEl=document.getElementById('q-img-display');
+  if(q.img){imgEl.src=q.img;imgEl.style.display='block'}
+  else imgEl.style.display='none';
+
+  document.getElementById('q-opts').innerHTML=q.opts.map((o,i)=>`
+    <button class="opt-btn ${answers[curQ]===i?'sel':''}" onclick="pickAns(${i})">
+      <div class="opt-circle">${lbls[i]}</div><span>${o}</span>
+    </button>`).join('');
+
+  document.getElementById('prev-btn').disabled=curQ===0;
+  const last=curQ===tot-1;
+  document.getElementById('next-btn').style.display=last?'none':'inline-flex';
+  document.getElementById('sub-btn').style.display=last?'inline-flex':'none';
+  renderDots();
+  if(!qStart[curQ])qStart[curQ]=Date.now();
+}
+
+function renderDots(){
+  document.getElementById('q-dots').innerHTML=currentExam.questions.map((_,i)=>`
+    <div class="q-dot ${answers[i]!==undefined?'done':''} ${i===curQ?'cur':''}" onclick="jumpQ(${i})">${i+1}</div>`).join('');
+}
+
+function recTime(){if(qStart[curQ]){qTimes[curQ]=(qTimes[curQ]||0)+Math.round((Date.now()-qStart[curQ])/1000);qStart[curQ]=null}}
+function pickAns(i){recTime();answers[curQ]=i;renderQ()}
+function jumpQ(i){recTime();curQ=i;qStart[curQ]=qStart[curQ]||Date.now();renderQ()}
+function nextQ(){recTime();curQ++;qStart[curQ]=qStart[curQ]||Date.now();renderQ()}
+function prevQ(){recTime();curQ--;qStart[curQ]=qStart[curQ]||Date.now();renderQ()}
+
+function confirmSubmit(){
+  const tot=currentExam.questions.length;const ans=Object.keys(answers).length;
+  const isEn=currentExam.lang==='en';
+  document.getElementById('sm-title').textContent=isEn?'Submit Exam?':'পরীক্ষা জমা দিবেন?';
+  document.getElementById('sm-msg').textContent=isEn?`You answered ${ans}/${tot} questions. Cannot change after submitting.`:`${ans}/${tot} টি প্রশ্নের উত্তর দিয়েছেন। জমা দিলে পরিবর্তন করা যাবে না।`;
+  document.getElementById('submit-modal').classList.add('open');
+}
+
+function submitExam(){
+  clearInterval(timerInt);closeModal('submit-modal');recTime();
+  const exam=currentExam;let correct=0,wrong=0;
+  exam.questions.forEach((q,i)=>{
+    if(answers[i]===undefined)return;
+    if(answers[i]===q.correct)correct++;else wrong++;
+  });
+  const total=exam.questions.length;
+  const score=Math.max(0,correct*exam.mark-wrong*(parseFloat(exam.neg)||0));
+  const maxScore=total*exam.mark;
+  const pct=Math.max(0,Math.round(score/maxScore*100));
+  const runName=document.getElementById('run-student').textContent.replace('👤 ','');
+
+  const result={name:runName,date:new Date().toLocaleDateString(),correct,wrong,unanswered:total-correct-wrong,total,score,maxScore,pct,totalTime:elapsed,qTimes:{...qTimes},answers:{...answers},examName:exam.name,examLang:exam.lang};
+
+  if(user){
+    exam.results=exam.results||[];exam.results.push(result);saveExams();
+    sResults.push(result);localStorage.setItem('tc_results',JSON.stringify(sResults));
+  }
+  showResult(result,exam.questions);
+}
+
+// ═══════════════════════════════════════════
+// RESULT
+// ═══════════════════════════════════════════
+function showResult(r,qs){
+  const isEn=r.examLang==='en';
+  const lbls=isEn?['A','B','C','D']:['ক','খ','গ','ঘ'];
+  document.getElementById('res-pct').textContent=r.pct+'%';
+  const msg=r.pct>=80?(isEn?'🏆 Excellent!':'🏆 চমৎকার!'):r.pct>=60?(isEn?'👍 Well done!':'👍 ভালো করেছ!'):r.pct>=40?(isEn?'😊 Keep practicing!':'😊 আরও পড়াশোনা দরকার'):(isEn?'📚 Don\'t give up!':'📚 হাল ছেড়ো না!');
+  document.getElementById('res-title').textContent=msg;
+  document.getElementById('res-sub').textContent=`${r.examName} • ${r.name}`;
+
+  document.getElementById('res-stats').innerHTML=`
+    <div class="stat-box"><div class="stat-val" style="color:var(--green)">${r.correct}</div><div class="stat-key">${isEn?'Correct':'সঠিক'}</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:var(--red)">${r.wrong}</div><div class="stat-key">${isEn?'Wrong':'ভুল'}</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:var(--muted)">${r.unanswered}</div><div class="stat-key">${isEn?'Skipped':'বাদ'}</div></div>
+    <div class="stat-box"><div class="stat-val">${r.score.toFixed(1)}</div><div class="stat-key">${isEn?'Marks':'নম্বর'}</div></div>
+    <div class="stat-box"><div class="stat-val">${r.maxScore}</div><div class="stat-key">${isEn?'Total':'পূর্ণ'}</div></div>
+    <div class="stat-box"><div class="stat-val">${fmtTime(r.totalTime)}</div><div class="stat-key">${isEn?'Time':'সময়'}</div></div>
+  `;
+
+  const maxT=Math.max(...qs.map((_,i)=>r.qTimes[i]||0),1);
+  document.getElementById('res-time').innerHTML=qs.map((_,i)=>{
+    const ti=r.qTimes[i]||0;const pct=Math.round(ti/maxT*100);
+    const isSlow=ti===Math.max(...qs.map((_,j)=>r.qTimes[j]||0))&&ti>0;
+    return `<div class="t-row"><div class="t-lbl">${isEn?'Q':'প্র.'} ${i+1}</div><div class="t-bg"><div class="t-fill ${isSlow?'slow':''}" style="width:${pct}%">${ti>2?`<span>${ti}s</span>`:''}</div></div><div class="t-val">${ti}s</div></div>`;
+  }).join('');
+
+  document.getElementById('res-review').innerHTML=qs.map((q,i)=>{
+    const ua=r.answers[i];const isCor=ua===q.correct;const noAns=ua===undefined;
+    return `
+      <div class="review-item ${noAns?'':isCor?'ok':'ng'}">
+        <div class="q-badge">${noAns?'⬜':isCor?'✅':'❌'} ${isEn?'Q':'প্র.'} ${i+1}</div>
+        <div class="review-q">${q.text}</div>
+        ${q.img?`<img src="${q.img}" style="width:100%;max-height:120px;object-fit:contain;border-radius:6px;margin-bottom:6px;">`:''}
+        ${!noAns?`<div class="review-ans"><strong style="color:${isCor?'var(--green)':'var(--red)'};">${isEn?'Your answer:':'তোমার উত্তর:'}</strong> ${lbls[ua]}. ${q.opts[ua]}</div>`
+          :`<div class="review-ans" style="color:var(--muted);">${isEn?'Not answered':'উত্তর দেওনি'}</div>`}
+        ${!isCor?`<div class="review-ans"><strong style="color:var(--green);">${isEn?'Correct:':'সঠিক:'}</strong> ${lbls[q.correct]}. ${q.opts[q.correct]}</div>`:''}
+        <div class="review-time">⏱ ${isEn?'Time:':'সময়:'} ${r.qTimes[i]||0}s</div>
+      </div>`;
+  }).join('');
+
+  showScreen('result-screen');
+
+  // Prompt guest to register after result
+  if(!user){
+    setTimeout(()=>toast('ফলাফল save করতে রেজিস্ট্রেশন করুন! 👆',''),1500);
+  }
+}
+
+// ═══════════════════════════════════════════
+// HISTORY
+// ═══════════════════════════════════════════
+function renderHistory(){
+  const el=document.getElementById('s-history');if(!el)return;
+  const bar=document.getElementById('s-demo-bar');if(bar)bar.style.display=user?'none':'flex';
+  if(!sResults.length){el.innerHTML='<div class="empty" style="padding:18px;"><div class="ei">📭</div><p>এখনো কোনো পরীক্ষা দেননি</p></div>';return}
+  el.innerHTML=[...sResults].reverse().slice(0,5).map(r=>`
+    <div style="padding:11px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+      <div><div style="font-weight:600;font-size:13px;">${r.examName}</div><div style="font-size:11px;color:var(--muted);">${r.name} • ${r.date}</div></div>
+      <span class="badge ${r.pct>=50?'badge-green':'badge-red'}">${r.pct}%</span>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════
+// PDF EXPORT
+// ═══════════════════════════════════════════
+function exportPDF(){
+  const exam=exams[currentExamIdx];if(!exam)return;
+  const isEn=exam.lang==='en';
+  const lbls=isEn?['A','B','C','D']:['ক','খ','গ','ঘ'];
+  const date=new Date().toLocaleDateString();
+
+  const qHTML=exam.questions.map((q,i)=>`
+    <div class="pdf-q">
+      <div class="pdf-q-text">${i+1}. ${q.text}</div>
+      ${q.img?`<img src="${q.img}" style="max-width:100%;max-height:150px;object-fit:contain;border-radius:6px;margin:6px 0;border:1px solid #e2e8f0;">`:''}
+      <div class="pdf-opts">
+        ${q.opts.map((o,oi)=>`<div class="pdf-opt"><span class="pdf-circle">${lbls[oi]}</span><span>${o}</span></div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  const html=`<!DOCTYPE html><html lang="${exam.lang}"><head><meta charset="UTF-8"><title>${exam.name}</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+<style>
+@page{margin:18mm 16mm;size:A4}*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:${isEn?"'Plus Jakarta Sans',Arial,sans-serif":"'Hind Siliguri',Arial,sans-serif"};font-size:13px;color:#111;background:#fff;line-height:1.5}
+.hdr{border-bottom:3px solid #1a56db;padding-bottom:12px;margin-bottom:14px}
+.brand{font-size:10px;color:#1a56db;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.exam-title{font-size:20px;font-weight:700;color:#0f172a;font-family:'Plus Jakarta Sans',sans-serif}
+.meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:#444}
+.info-box{background:#f8faff;border:1.5px solid #c7d7f9;border-radius:7px;padding:10px 14px;margin-bottom:16px;display:flex;gap:20px;flex-wrap:wrap}
+.info-f{flex:1;min-width:120px}.info-l{font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.info-line{border-bottom:1.5px solid #aaa;height:18px}
+.inst-box{background:#fffbeb;border:1.5px solid #fcd34d;border-radius:7px;padding:10px 14px;margin-bottom:18px}
+.inst-title{font-weight:700;font-size:13px;color:#92400e;margin-bottom:5px}
+.inst-box ul{padding-left:15px}.inst-box li{font-size:12px;color:#444;margin-bottom:2px}
+.qs-title{font-size:14px;font-weight:700;color:#1a56db;border-bottom:2px solid #e2e8f0;padding-bottom:7px;margin-bottom:14px}
+.pdf-q{margin-bottom:18px;page-break-inside:avoid}
+.pdf-q-text{font-size:14px;font-weight:600;color:#0f172a;margin-bottom:8px;line-height:1.5}
+.pdf-opts{display:grid;grid-template-columns:1fr 1fr;gap:5px 16px;padding-left:8px}
+.pdf-opt{display:flex;align-items:center;gap:6px;font-size:13px}
+.pdf-circle{width:19px;height:19px;border-radius:50%;border:1.5px solid #1a56db;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#1a56db;flex-shrink:0}
+.ans-key{margin-top:28px;page-break-before:always;border-top:3px solid #10b981;padding-top:14px}
+.ans-title{font-size:14px;font-weight:700;color:#10b981;margin-bottom:10px}
+.ans-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.ans-item{background:#f0fdf4;border:1.5px solid #10b981;border-radius:6px;padding:7px;text-align:center}
+.ans-q{font-size:10px;color:#666}.ans-v{font-weight:700;color:#059669;font-size:14px}
+.footer{margin-top:24px;border-top:1px solid #e2e8f0;padding-top:8px;display:flex;justify-content:space-between;font-size:10px;color:#888}
+</style></head><body>
+<div class="hdr">
+  <div class="brand">TestCraft EDU — MCQ Exam Paper</div>
+  <div class="exam-title">${exam.name}</div>
+  <div class="meta">
+    ${exam.subject?`<span>📚 ${isEn?'Subject':'বিষয়'}: <strong>${exam.subject}</strong></span>`:''}
+    <span>❓ ${isEn?'Questions':'প্রশ্ন'}: <strong>${exam.questions.length}</strong></span>
+    <span>✅ ${isEn?'Total Marks':'পূর্ণ নম্বর'}: <strong>${exam.questions.length*exam.mark}</strong></span>
+    ${exam.timeLimit?`<span>⏱ ${isEn?'Time':'সময়'}: <strong>${exam.timeLimit} ${isEn?'min':'মিনিট'}</strong></span>`:''}
+    ${exam.neg>0?`<span>❌ ${isEn?'Negative':'নেগেটিভ'}: <strong>-${exam.neg}</strong></span>`:''}
+    <span>📅 ${date}</span>
+  </div>
+</div>
+<div class="info-box">
+  ${[isEn?'Student Name':'শিক্ষার্থীর নাম',isEn?'Roll No.':'রোল নম্বর',isEn?'Class/Section':'শ্রেণি/সেকশন',isEn?'Marks Obtained':'প্রাপ্ত নম্বর'].map(l=>`<div class="info-f"><div class="info-l">${l}</div><div class="info-line"></div></div>`).join('')}
+</div>
+<div class="inst-box">
+  <div class="inst-title">📌 ${isEn?'Instructions':'নির্দেশাবলি'}</div>
+  <ul>
+    <li>${isEn?'Circle the letter of the correct answer.':'প্রতিটি প্রশ্নের সঠিক উত্তরের অক্ষরটি বৃত্তাকার করুন।'}</li>
+    <li>${isEn?`Each correct answer earns ${exam.mark} mark(s).`:`প্রতিটি সঠিক উত্তরের জন্য ${exam.mark} নম্বর পাবে।`}</li>
+    ${exam.neg>0?`<li>${isEn?`Each wrong answer deducts ${exam.neg} mark(s).`:`প্রতিটি ভুল উত্তরের জন্য ${exam.neg} নম্বর কাটা যাবে।`}</li>`:`<li>${isEn?'No negative marking.':'কোনো নেগেটিভ মার্কিং নেই।'}</li>`}
+    ${exam.timeLimit?`<li>${isEn?`Time allowed: ${exam.timeLimit} minutes.`:`পরীক্ষার সময়: ${exam.timeLimit} মিনিট।`}</li>`:''}
+  </ul>
+</div>
+<div class="qs-title">${isEn?'Questions':'প্রশ্নসমূহ'}</div>
+${qHTML}
+<div class="ans-key">
+  <div class="ans-title">✅ ${isEn?'Answer Key (Teacher\'s Copy)':'উত্তরমালা (শিক্ষকের কপি)'}</div>
+  <div class="ans-grid">
+    ${exam.questions.map((q,i)=>`<div class="ans-item"><div class="ans-q">${isEn?'Q':'প্র.'} ${i+1}</div><div class="ans-v">${lbls[q.correct]}</div></div>`).join('')}
+  </div>
+</div>
+<div class="footer"><span>TestCraft EDU</span><span>${isEn?'Exam Code':'পরীক্ষার কোড'}: ${exam.code}</span><span>${date}</span></div>
+<script>window.onload=function(){window.print()}<\/script>
+</body></html>`;
+
+  const pw=window.open('','_blank','width=900,height=700');
+  if(!pw){toast('পপআপ ব্লক হয়েছে! Allow করুন','err');return}
+  pw.document.write(html);pw.document.close();
+  toast('PDF উইন্ডো খুলছে... 📄','ok');
+}
+
+// ═══════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════
+function fmtTime(s){if(!s)return'0s';if(s<60)return s+'s';return Math.floor(s/60)+'m '+(s%60)+'s'}
+
+function toast(msg,type=''){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.className='toast show'+(type?' '+type:'');
+  setTimeout(()=>el.className='toast',2800);
+}
+
+function saveExams(){localStorage.setItem('tc_exams',JSON.stringify(exams))}
+</script>
+</body>
+</html>
